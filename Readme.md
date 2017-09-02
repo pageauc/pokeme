@@ -1,6 +1,6 @@
-# pokeme.py  A motion tracking demonstration written by Claude Pageau
+# pokeme.py  A motion tracking demonstration
 ## Windows, Unix, Raspberry Pi python opencv 
-## Demonstration motion menus and image overlays
+### with motion menus and image overlays  written by Claude Pageau
 
 ## Program Description
 This is a fun demonstration showing moving a clipped image graphic
@@ -18,7 +18,7 @@ web camera.  Note Download the latest python version that includes numpy
 and opencv.
 
 ## Quick Install   
-Easy Install of speed-cam onto a Raspberry Pi Computer with latest Raspbian. 
+Easy Install of pokeme onto a Raspberry Pi Computer with latest Raspbian. 
 
     curl -L https://raw.github.com/pageauc/pokeme/master/install.sh | bash
 
@@ -36,7 +36,7 @@ most up-to-date python version. For Downloads visit https://www.python.org/downl
 
 The latest python versions include numpy and recent opencv that is required to run
 this code. You will also need a USB web cam installed and working. To install this 
-program access the GitHub project page at https://raw.github.com/pageauc/pokeme
+program access the GitHub project page at https://github.com/pageauc/pokeme
 and select the green Clone or download zip option. The files will be cloned or 
 zipped to a pokeme folder. You can run the code from console, gui desktop or from
 python IDLE application.
