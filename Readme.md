@@ -1,6 +1,8 @@
-# pokeme.py  A motion tracking demonstration
+# pokeme.py  Image clip motion tracking demonstration
 ## Windows, Unix, Raspberry Pi python opencv 
-### with motion menus and image overlays  written by Claude Pageau
+### Uses motion menus and image clip overlays  written by Claude Pageau
+
+### YouTube Video here https://youtu.be/CYhR1wSbNPE
 
 ## Program Description
 This is a fun demonstration showing moving a clipped image graphic
@@ -28,7 +30,6 @@ click, paste.  The command should download and execute the github install.sh
 script for pokeme.py.  
 Note - a raspbian apt-get update and upgrade will be performed as part of install 
 so it may take some time if these are not up-to-date
-
 
 ## Windows or Non RPI Unix Installs
 For Windows or Unix computer platforms (non RPI or Debian) ensure you have the 
