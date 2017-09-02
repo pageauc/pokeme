@@ -1,6 +1,7 @@
-# pokeme.py  Image clip motion tracking demonstration
+# pokeme.py  written by Claude Pageau
+## Image clip motion tracking demonstration
 ## Windows, Unix, Raspberry Pi python opencv 
-### Uses motion menus and image clip overlays  written by Claude Pageau
+### demonstrates motion activated menus and image clip tracking
 
 ### YouTube Video here https://youtu.be/CYhR1wSbNPE
 
