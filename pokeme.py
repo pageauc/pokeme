@@ -11,8 +11,8 @@ largest contour and return its x,y coordinate.
 Some of this code is base on a YouTube tutorial by
 Kyle Hounslow using C here https://www.youtube.com/watch?v=X6rPdRZzgjg
 
-Here is a my YouTube video demonstrating this demo program using a
-Raspberry Pi B2 https://youtu.be/09JS7twPBsQ
+Here is a my YouTube video demonstrating this demo program on Windows 7
+https://youtu.be/CYhR1wSbNPE
 
 Requires a Raspberry Pi with a RPI camera module installed and configured
 dependencies
@@ -125,8 +125,8 @@ photo_window_h = 150
 photo_window_x = int( x_center - ( photo_window_w / 2 ))
 photo_window_y = int( y_center - ( photo_window_h / 2 ))
 
-poke_w = 100    # Width of Pokeme image
-poke_h = 100    # Height of Pokeme image
+poke_w = 146    # Width of Pokeme image
+poke_h = 146    # Height of Pokeme image
 
 # OpenCV Motion Tracking Settings
 MIN_AREA = 1000     # excludes all contours less than or equal to this Area
