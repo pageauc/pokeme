@@ -29,7 +29,7 @@ mypath=os.path.abspath(__file__)       # Find the full path of this python scrip
 baseDir=mypath[0:mypath.rfind("/")+1]  # get the path location only (excluding script name)
 baseFileName=mypath[mypath.rfind("/")+1:mypath.rfind(".")]
 progName = os.path.basename(__file__)
-version = "0.5"
+version = "0.52"
 
 print("%s %s written by Claude Pageau" % (progName, version))
 print("Loading Please Wait ....")
@@ -49,19 +49,6 @@ try:  # Bypass loading picamera library if not available eg. UNIX or WINDOWS
 except:
     WEBCAM = True
 
-pokefile = 'pokeme-1.png'  # Name of image file to initially load
-pokefilesave = 'pokeme-s.png' #Name of crop image file to save
-
-verbose = True       # Set to False for no data display
-window_on = True     # Set to True displays opencv windows (GUI desktop reqd)
-SHOW_CIRCLE = False  # show a circle otherwise show bounding rectancle on window
-CIRCLE_SIZE = 8      # diameter of circle to show motion location in window
-CIRCLE_LINE = 2      # width of line for drawing circle
-FONT_SCALE = .5      # OpenCV window text font size scaling factor default=.5 (lower is smaller)
-LINE_THICKNESS = 1   # thickness of bounding line in pixels
-WINDOW_BIGGER = 1    # resize multiplier for speed photo image and if gui_window_on=True then makes opencv window bigger
-                     # Note if the window is larger than 1 then a reduced frame rate will occur
-
 # Web Camera Settings
 WEBCAM_SRC = 0        # default = 0   USB opencv connection number
 WEBCAM_WIDTH = 640    # default = 320 USB Webcam Image width
@@ -77,64 +64,6 @@ CAMERA_VFLIP = True   # True=flip camera image vertically
 CAMERA_ROTATION = 0   # Rotate camera image valid values 0, 90, 180, 270
 CAMERA_FRAMERATE = 30 # default = 25 lower for USB Web Cam. Try different settings
 
-FRAME_COUNTER = 1000  # Counter for Frames per Second Display
-
-# Menu Settings
-MENU_WIDTH = 200
-MENU_HEIGHT = 75
-MENU_LINE_WIDTH = 2
-
-# Color data for OpenCV lines and text
-cvWhite = (255,255,255)
-cvBlack = (0,0,0)
-cvBlue = (255,0,0)
-cvGreen = (0,255,0)
-cvRed = (0,0,255)
-
-menuBorderColor = cvGreen  # Menu rectangle color
-menuTextColor = cvBlue     # Menu rectangle text color
-menuHitColor = cvRed       # Menu rectangle circle color when motion hit activated
-circleColor = cvGreen      # Color of motion Tracking circle
-
-# Menu Box Setup
-menucounter = 8
-menusetupdata = [10, 10, MENU_WIDTH, MENU_HEIGHT, "SETUP"]
-menusetuphits = 0
-
-menuplaydata = [220, 10, MENU_WIDTH, MENU_HEIGHT, "PLAY"]
-menuplayhits = 0
-
-menuquitdata = [430, 10, MENU_WIDTH, MENU_HEIGHT, "QUIT"]
-menuquithits = 0
-
-menureviewdata = [10, 10, MENU_WIDTH, MENU_HEIGHT, "REVIEW"]
-menureviewhits = 0
-
-menuphotodata = [430, 220, MENU_WIDTH, MENU_HEIGHT, "TAKE PHOTO"]
-menuphotohits = 0
-
-menuexitdata = [10, 10, MENU_WIDTH, MENU_HEIGHT,"EXIT"]
-menuexithits = 0
-
-menucanceldata = [220, 10, MENU_WIDTH, MENU_HEIGHT, "BACK"]
-menucancelhits = 0
-
-# photo window settings
-photo_window_line_w = 2
-photo_window_w = 150
-photo_window_h = 150
-photo_window_x = int( CAMERA_WIDTH / 2 - photo_window_w / 2 )
-photo_window_y = MENU_HEIGHT + 100
-
-poke_w = 100    # Width of Pokeme image
-poke_h = 100    # Height of Pokeme image
-
-# OpenCV Motion Tracking Settings
-MIN_AREA = 1000     # excludes all contours less than or equal to this Area
-
-THRESHOLD_SENSITIVITY = 25  # These two settings should not need changing
-BLUR_SIZE = 10
-
 if WEBCAM:   # Get centerline for movement counting
     x_center = int(WEBCAM_WIDTH/2)
     y_center = int(WEBCAM_HEIGHT/2)
@@ -149,6 +78,61 @@ else:
     y_max = CAMERA_WIDTH
     x_buf = int(CAMERA_WIDTH/10)
     y_buf = int(CAMERA_HEIGHT/10)
+
+pokefile = 'pokeme-1.png'  # Name of image file to initially load
+pokefilesave = 'pokeme-s.png' #Name of crop image file to save
+
+verbose = True       # Set to False for no data display
+window_on = True     # Set to True displays opencv windows (GUI desktop reqd)
+SHOW_CIRCLE = False  # show a circle otherwise show bounding rectancle on window
+CIRCLE_SIZE = 8      # diameter of circle to show motion location in window
+CIRCLE_LINE = 2      # width of line for drawing circle
+FONT_SCALE = .5      # OpenCV window text font size scaling factor default=.5 (lower is smaller)
+LINE_THICKNESS = 1   # thickness of bounding line in pixels
+WINDOW_BIGGER = 1    # resize multiplier for speed photo image and if gui_window_on=True then makes opencv window bigger
+                     # Note if the window is larger than 1 then a reduced frame rate will occur
+FRAME_COUNTER = 1000 # Counter for Frames per Second Display
+
+# Color data for OpenCV lines and text
+cvWhite = (255,255,255)
+cvBlack = (0,0,0)
+cvBlue = (255,0,0)
+cvGreen = (0,255,0)
+cvRed = (0,0,255)
+circleColor = cvGreen      # Color of motion Tracking circle
+
+# Menu Box Setup
+MENU_WIDTH = 200
+MENU_HEIGHT = 75
+MENU_LINE_WIDTH = 2
+
+menucounter = 8
+menuBorderColor = cvGreen  # Menu rectangle color
+menuTextColor = cvBlue     # Menu rectangle text color
+menuHitColor = cvRed       # Menu rectangle circle color when motion hit activated
+menusetupdata = [10, 10, MENU_WIDTH, MENU_HEIGHT, "SETUP"]
+menuplaydata = [220, 10, MENU_WIDTH, MENU_HEIGHT, "PLAY"]
+menuquitdata = [430, 10, MENU_WIDTH, MENU_HEIGHT, "QUIT"]
+menureviewdata = [10, 10, MENU_WIDTH, MENU_HEIGHT, "REVIEW"]
+menuphotodata = [430, 220, MENU_WIDTH, MENU_HEIGHT, "TAKE PHOTO"]
+menuexitdata = [10, 10, MENU_WIDTH, MENU_HEIGHT,"EXIT"]
+menucanceldata = [220, 10, MENU_WIDTH, MENU_HEIGHT, "BACK"]
+
+# photo window settings
+photo_window_line_w = 2
+photo_window_w = 150
+photo_window_h = 150
+photo_window_x = int( x_center - ( photo_window_w / 2 ))
+photo_window_y = int( y_center - ( photo_window_h / 2 ))
+
+poke_w = 100    # Width of Pokeme image
+poke_h = 100    # Height of Pokeme image
+
+# OpenCV Motion Tracking Settings
+MIN_AREA = 1000     # excludes all contours less than or equal to this Area
+
+THRESHOLD_SENSITIVITY = 25  # These two settings should not need changing
+BLUR_SIZE = 10
 
 #-----------------------------------------------------------------------------------------------
 class PiVideoStream:
