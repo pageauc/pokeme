@@ -29,7 +29,7 @@ mypath=os.path.abspath(__file__)       # Find the full path of this python scrip
 baseDir=mypath[0:mypath.rfind("/")+1]  # get the path location only (excluding script name)
 baseFileName=mypath[mypath.rfind("/")+1:mypath.rfind(".")]
 progName = os.path.basename(__file__)
-version = "0.52"
+version = "0.53"
 
 print("%s %s written by Claude Pageau" % (progName, version))
 print("Loading Please Wait ....")
@@ -125,8 +125,8 @@ photo_window_h = 150
 photo_window_x = int( x_center - ( photo_window_w / 2 ))
 photo_window_y = int( y_center - ( photo_window_h / 2 ))
 
-poke_w = 146    # Width of Pokeme image
-poke_h = 146    # Height of Pokeme image
+poke_w = 128    # Width of Pokeme image
+poke_h = 128    # Height of Pokeme image
 
 # OpenCV Motion Tracking Settings
 MIN_AREA = 1000     # excludes all contours less than or equal to this Area
@@ -256,6 +256,7 @@ def menu_make( menudata, image, cxy, menuhits ):
             menuhits += 1
     return image, menuhits
 
+#-----------------------------------------------------------------------------------------------    
 def flip_Webcam_image(image):
     if WEBCAM:
         if ( WEBCAM_HFLIP and WEBCAM_VFLIP ):
@@ -265,7 +266,6 @@ def flip_Webcam_image(image):
         elif WEBCAM_VFLIP:
             image = cv2.flip( image, 0 )
     return image
-
 
 #-----------------------------------------------------------------------------------------------
 def pokemen():
@@ -285,21 +285,28 @@ def pokemen():
     menuexit = False   # Exit Menu
     menuplay = False   # Play
 
-
+    # Initialize various menu hit counters
     menusetuphits = 0
     menuplayhits = 0
     menuquithits = 0
-
     menuphotohits = 0
     menucancelhits = 0
-
     menureviewhits = 0
 
-    pokeme = cv2.imread(pokefile)
+    # Load default pokefile image
+    if os.path.exists(pokefile):
+        print("Loading Image %s" % pokefile)
+        pokeme = cv2.imread(pokefile)
+    else:
+        print("ERROR: File Not Found %s" % pokefile)
+        print("       Please Investigate. Exiting")
+        quit()   
+    pokeme = cv2.resize( pokeme,( poke_w, poke_h ))
     pw = pokeme.shape[1]
     ph = pokeme.shape[0]
     print ("%s - Loaded %s w=%i h=%i" % (progName, pokefile, pw, ph))
-    try:
+    
+    try:  # Read initial video stream image frame
         image2 = vs.read()
         image2 = flip_Webcam_image(image2)
         grayimage1 = cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)
@@ -310,7 +317,7 @@ def pokemen():
         motion_found = False
         start_time, frame_count = show_FPS(start_time, frame_count)
 
-        image2 = vs.read()   # Read frame from video stream
+        image2 = vs.read()   # Read another image frame from video stream
         image2 = flip_Webcam_image(image2)
 
         grayimage2 = cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)
@@ -351,6 +358,7 @@ def pokemen():
         if not menuplay and motion_found:
             cv2.circle(image2, cxy, CIRCLE_SIZE, circleColor, 4)
 
+        # Display and process motion menus    
         if menumain:
             image2, menusetuphits = menu_make( menusetupdata, image2, cxy, menusetuphits )
             image2, menuplayhits = menu_make( menuplaydata, image2, cxy, menuplayhits )
@@ -457,7 +465,6 @@ def pokemen():
             cv2.destroyAllWindows()
             print("End Motion Tracking ......")
             still_scanning = False
-
     return True
 
 #-----------------------------------------------------------------------------------------------
