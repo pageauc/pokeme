@@ -11,17 +11,20 @@ and motion tracking activated menus.  To activate a menu move your
 fingers/hand inside the menu box (a red indicator will show recording
 of hits)  When the menu hits counter is exceeded the menu pick will
 be activated.
-Run Setup menu to create a new clipped image.  It will be saved prior to play.
-Play does not do anything at this time but just moves image clip
-to follow movement motion tracking.  
+Run Setup menu to create a new clipped image.  Image clip will be saved.
+Play will try to match nearness of image clip location with a random
+screen location.  As level decreases the nearness value will be smaller (harder to match)
+This is pretty simple example of a play demo.  Additional pokeme images
+are included for testing purposes.
 
 This python script will run under Windows or a non RPI unix distro using a 
 web camera as well as on a Raspberry Pi computer using a pi-camera or 
-web camera.  Note Download the latest python version that includes numpy
-and opencv.
+web camera.  Note On Non Raspberry Pi systems, Download the latest python
+version that includes numpy and opencv here https://www.python.org/downloads
 
-## Quick Install   
-Easy Install of pokeme onto a Raspberry Pi Computer with latest Raspbian. 
+## Quick Install RPI or Debian 
+Easy Install of pokeme onto a Raspberry Pi Computer with latest Raspbian
+or Debian distro (untested). 
 
     curl -L https://raw.github.com/pageauc/pokeme/master/install.sh | bash
 
@@ -56,7 +59,7 @@ resize multiplier variable.
 To launch program make sure camera and video display are connected. 
 You must be in a GUI desktop session. Open a desktop terminal session, 
 File Manger. or Menu Programming, Python IDLE program. 
-Navigate to the pokme folder and load/execute
+Navigate to the pokme folder and load/execute.
 
     cd ~/pokeme
     ./pokeme.py
