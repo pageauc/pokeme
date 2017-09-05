@@ -29,7 +29,7 @@ mypath=os.path.abspath(__file__)       # Find the full path of this python scrip
 baseDir=mypath[0:mypath.rfind("/")+1]  # get the path location only (excluding script name)
 baseFileName=mypath[mypath.rfind("/")+1:mypath.rfind(".")]
 progName = os.path.basename(__file__)
-version = "0.60"
+version = "0.61"
 
 print("%s %s written by Claude Pageau" % (progName, version))
 print("Loading Please Wait ....")
@@ -80,17 +80,12 @@ else:
     x_buf = int(CAMERA_WIDTH/10)
     y_buf = int(CAMERA_HEIGHT/10)
 
-pokefile = 'pokeme-1.png'  # Name of image file to initially load
-pokefilesave = 'pokeme-s.png' #Name of crop image file to save
+pokefile = 'pokeme-1.png'     # Name of image file to initially load
+pokefilesave = 'pokeme-s.png' # Name of crop image file to save
 
 verbose = True       # Set to False for no data display
 window_on = True     # Set to True displays opencv windows (GUI desktop reqd)
 show_fps = False     # Show Frames per second
-SHOW_CIRCLE = False  # show a circle otherwise show bounding rectancle on window
-CIRCLE_SIZE = 8      # diameter of circle to show motion location in window
-CIRCLE_LINE = 2      # width of line for drawing circle
-FONT_SCALE = .5      # OpenCV window text font size scaling factor default=.5 (lower is smaller)
-LINE_THICKNESS = 1   # thickness of bounding line in pixels
 WINDOW_BIGGER = 1    # resize multiplier for speed photo image and if gui_window_on=True then makes opencv window bigger
                      # Note if the window is larger than 1 then a reduced frame rate will occur
 FRAME_COUNTER = 1000 # Counter for Frames per Second Display
@@ -116,7 +111,7 @@ menusetupdata = [10, 10, MENU_WIDTH, MENU_HEIGHT, "SETUP"]
 menuplaydata = [220, 10, MENU_WIDTH, MENU_HEIGHT, "PLAY"]
 menuquitdata = [430, 10, MENU_WIDTH, MENU_HEIGHT, "QUIT"]
 menureviewdata = [10, 10, MENU_WIDTH, MENU_HEIGHT, "REVIEW"]
-menuphotodata = [430, 220, MENU_WIDTH, MENU_HEIGHT, "TAKE PHOTO"]
+menuphotodata = [430, 10, MENU_WIDTH, MENU_HEIGHT, "TAKE PHOTO"]
 menuexitdata = [10, 10, MENU_WIDTH, MENU_HEIGHT,"EXIT"]
 menucanceldata = [220, 10, MENU_WIDTH, MENU_HEIGHT, "BACK"]
 
@@ -132,6 +127,9 @@ poke_h = 128    # Height of Pokeme image
 
 # OpenCV Motion Tracking Settings
 MIN_AREA = 1000     # excludes all contours less than or equal to this Area
+CIRCLE_SIZE = 8      # diameter of circle to show motion location in window
+CIRCLE_LINE = 2      # width of line for drawing circle
+FONT_SCALE = .5      # OpenCV window text font size scaling factor default=.5 (lower is smaller)
 
 THRESHOLD_SENSITIVITY = 25  # These two settings should not need changing
 BLUR_SIZE = 10
