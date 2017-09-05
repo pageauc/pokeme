@@ -29,7 +29,7 @@ mypath=os.path.abspath(__file__)       # Find the full path of this python scrip
 baseDir=mypath[0:mypath.rfind("/")+1]  # get the path location only (excluding script name)
 baseFileName=mypath[mypath.rfind("/")+1:mypath.rfind(".")]
 progName = os.path.basename(__file__)
-version = "0.53"
+version = "0.60"
 
 print("%s %s written by Claude Pageau" % (progName, version))
 print("Loading Please Wait ....")
@@ -37,6 +37,7 @@ print("Loading Please Wait ....")
 # import the necessary packages
 import io
 import time
+import math
 from random import randint
 import cv2
 from threading import Thread
@@ -84,6 +85,7 @@ pokefilesave = 'pokeme-s.png' #Name of crop image file to save
 
 verbose = True       # Set to False for no data display
 window_on = True     # Set to True displays opencv windows (GUI desktop reqd)
+show_fps = False     # Show Frames per second
 SHOW_CIRCLE = False  # show a circle otherwise show bounding rectancle on window
 CIRCLE_SIZE = 8      # diameter of circle to show motion location in window
 CIRCLE_LINE = 2      # width of line for drawing circle
@@ -256,7 +258,7 @@ def menu_make( menudata, image, cxy, menuhits ):
             menuhits += 1
     return image, menuhits
 
-#-----------------------------------------------------------------------------------------------    
+#-----------------------------------------------------------------------------------------------
 def flip_Webcam_image(image):
     if WEBCAM:
         if ( WEBCAM_HFLIP and WEBCAM_VFLIP ):
@@ -266,6 +268,13 @@ def flip_Webcam_image(image):
         elif WEBCAM_VFLIP:
             image = cv2.flip( image, 0 )
     return image
+
+#-----------------------------------------------------------------------------------------------
+def track_distance(mPoint1, mPoint2):   # Get distance between two points
+    x1, y1 = mPoint1
+    x2, y2 = mPoint2
+    trackLen = abs(math.hypot(x2 - x1, y2 - y1))
+    return trackLen
 
 #-----------------------------------------------------------------------------------------------
 def pokemen():
@@ -300,22 +309,28 @@ def pokemen():
     else:
         print("ERROR: File Not Found %s" % pokefile)
         print("       Please Investigate. Exiting")
-        quit()   
+        quit()
     pokeme = cv2.resize( pokeme,( poke_w, poke_h ))
     pw = pokeme.shape[1]
     ph = pokeme.shape[0]
     print ("%s - Loaded %s w=%i h=%i" % (progName, pokefile, pw, ph))
-    
+
     try:  # Read initial video stream image frame
         image2 = vs.read()
         image2 = flip_Webcam_image(image2)
         grayimage1 = cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)
     except:
         return False   # Failed to process initial image
-
+    # Setup a secret hotspot with 10 px buffer around edges
+    hsx = randint(10, x_max - poke_w - 10)
+    hsy = randint(10, y_max - poke_h - 10)
+    game_over = False
+    game_distance = 50 # pixels away between hidden spot and current motion
+    game_intro = True
     while still_scanning:
         motion_found = False
-        start_time, frame_count = show_FPS(start_time, frame_count)
+        if show_fps:   # print fps data if verbose is on
+            start_time, frame_count = show_FPS(start_time, frame_count)
 
         image2 = vs.read()   # Read another image frame from video stream
         image2 = flip_Webcam_image(image2)
@@ -358,46 +373,66 @@ def pokemen():
         if not menuplay and motion_found:
             cv2.circle(image2, cxy, CIRCLE_SIZE, circleColor, 4)
 
-        # Display and process motion menus    
+        if menuplay:
+            how_close = track_distance ( (x,y), (hsx,hsy))
+            if how_close <= game_distance:
+                hsx = randint(10, x_max - poke_w - 10)
+                hsy = randint(10, y_max - poke_h - 10)
+                game_distance = game_distance - 10 # pixels away between hidden spot and current motion
+                if game_distance <= 10:
+                    game_over = True
+                menuplay = False
+                menumain = True
+
+        # Display and process motion menus
         if menumain:
+            game_level = int (game_distance / 10)
+            game_text = "Pokeme Level %i"  % game_level
+            cv2.putText(image2, game_text, (150,140),
+                        cv2.FONT_HERSHEY_SIMPLEX, 1,
+                        cvBlue, MENU_LINE_WIDTH)
+            if game_over:     # show game over if level is zero
+                cv2.putText(image2, "Game Over. You Win !", (120,180),
+                            cv2.FONT_HERSHEY_SIMPLEX, 1,
+                            cvRed, MENU_LINE_WIDTH)
+            if game_intro:
+                cv2.putText(image2, "Find the Secret Treasure Locations", (50,180),
+                            cv2.FONT_HERSHEY_SIMPLEX, 1,
+                            cvBlue, MENU_LINE_WIDTH)
+
             image2, menusetuphits = menu_make( menusetupdata, image2, cxy, menusetuphits )
             image2, menuplayhits = menu_make( menuplaydata, image2, cxy, menuplayhits )
             image2, menuquithits = menu_make( menuquitdata, image2, cxy, menuquithits )
             if menusetuphits > menucounter:
                 menuedit = True
-                menumain = False
             elif menuplayhits > menucounter:
                 menuplay = True
-                menumain = False
+                game_intro = False
             elif menuquithits > menucounter:
                 menuexit = True
-                menumain = False
 
-            if not menumain:
+            if menuedit or menuplay or menuexit:
+                menumain = False
                 menusetuphits = 0
                 menuplayhits = 0
                 menuquithits = 0
-                menuphotohits = 0
-                menucancelhits = 0
+
         elif menuexit:
             image2, menuquithits = menu_make( menuquitdata, image2, cxy, menuquithits )
             image2, menucancelhits = menu_make( menucanceldata, image2, cxy, menucancelhits )
             if menuquithits > menucounter:
                 menuquithits = 0
                 menucancelhits = 0
-                break
+                menuexit = False
+                still_scanning = False
             elif menucancelhits > menucounter:
-                menuexithits = 0
-                menucancelhits = 0
                 menuquithits = 0
-                menusetuphits = 0
-                menuplayhits = 0
-                menuphotohits = 0
+                menucancelhits = 0
                 menuexit = False
                 menumain = True
         elif menuedit:
-            image2, menucancelhits = menu_make( menucanceldata, image2, cxy, menucancelhits )
             image2, menuphotohits = menu_make( menuphotodata, image2, cxy, menuphotohits )
+            image2, menucancelhits = menu_make( menucanceldata, image2, cxy, menucancelhits )
             cv2.rectangle(image2,( photo_window_x, photo_window_y),
                                  ( photo_window_x + photo_window_w, photo_window_y + photo_window_h ),
                                    cvBlue, photo_window_line_w)   # Window for taking photo of pokeme
@@ -413,20 +448,19 @@ def pokemen():
                 pokeme = cv2.resize( pokeme,( poke_w, poke_h ))
                 pw = pokeme.shape[1]
                 ph = pokeme.shape[0]
-                menuedit = False
-                menuplay = True
-
-            if menucancelhits > menucounter:
-                menuedit = False
                 menumain = True
 
-            if not menuedit:
-                menuexithits = 0
-                menucancelhits = 0
-                menuquithits = 0
-                menusetuphits = 0
-                menuplayhits = 0
+            elif menucancelhits > menucounter:
+                menumain = True
+
+            if menumain:
                 menuphotohits = 0
+                menucancelhits = 0
+                menuedit = False
+                game_over = False
+                game_intro = True
+                game_distance = 40 # pixels away between hidden spot and current motion
+
         elif menuplay:
             image3 = image2
             image3.flags.writeable = True
@@ -461,8 +495,6 @@ def pokemen():
             menumain = True
 
         elif cv2.waitKey(1) & 0xFF == ord('q'):  # Close Window if q pressed
-            vs.stop()
-            cv2.destroyAllWindows()
             print("End Motion Tracking ......")
             still_scanning = False
     return True
@@ -488,6 +520,9 @@ if __name__ == '__main__':
                 vs.camera.vflip = CAMERA_VFLIP
                 time.sleep(2.0)  # Allow PiCamera to initialize
             if pokemen():
+                print("%s %s - Exiting" % (progName, version))
+                cv2.destroyAllWindows()
+                vs.stop()
                 quit(0)
         except KeyboardInterrupt:
             vs.stop()
